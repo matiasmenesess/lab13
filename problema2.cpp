@@ -82,6 +82,7 @@ class Solution {
 public:
     int countPaths(int n, vector<vector<int>>& roads) {
         const int MOD = 1e9 + 7;
+        const long long INF = 1e15; // Valor alto para simular "infinito"
         
         // Construimos la lista de adyacencia
         vector<vector<pair<int, int>>> adj(n);
@@ -91,8 +92,8 @@ public:
             adj[v].emplace_back(u, time);
         }
 
-        // Distancias mínimas inicializadas a infinito y formas de llegar
-        vector<long long> dist(n, LLONG_MAX);
+        // Distancias mínimas inicializadas a un valor alto y formas de llegar
+        vector<long long> dist(n, INF);
         vector<int> caminos(n, 0);
         dist[0] = 0;
         caminos[0] = 1;
@@ -105,21 +106,21 @@ public:
             auto [curDist, u] = minHeap.top();
             minHeap.pop();
 
-            // Ignoramos si encontramos una distancia más larga de lo necesario
-            if (curDist > dist[u]) continue;
+            // Solo procesamos si la distancia es la mínima registrada
+            if (curDist <= dist[u]) {
+                for (auto& [v, time] : adj[u]) {
+                    long long newDist = curDist + time;
 
-            for (auto& [v, time] : adj[u]) {
-                long long newDist = curDist + time;
-
-                // Si encontramos un camino más corto
-                if (newDist < dist[v]) {
-                    dist[v] = newDist;
-                    caminos[v] = caminos[u];
-                    minHeap.insert({newDist, v});
-                }
-                // Si encontramos otro camino de igual longitud mínima
-                else if (newDist == dist[v]) {
-                    caminos[v] = (caminos[v] + caminos[u]) % MOD;
+                    // Si encontramos un camino más corto
+                    if (newDist < dist[v]) {
+                        dist[v] = newDist;
+                        caminos[v] = caminos[u];
+                        minHeap.insert({newDist, v});
+                    }
+                    // Si encontramos otro camino de igual longitud mínima
+                    else if (newDist == dist[v]) {
+                        caminos[v] = (caminos[v] + caminos[u]) % MOD;
+                    }
                 }
             }
         }
