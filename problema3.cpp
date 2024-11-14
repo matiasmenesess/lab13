@@ -3,37 +3,53 @@
 //2. Silva Reyes, Santiago Miguel
 //3. Meneses Roncal, Matias Alonso
 
+#include <iostream>
 #include <vector>
 #include <algorithm>
+
 
 using namespace std;
 
 class Solution {
 public:
     double maxProbability(int n, vector<vector<int>>& edges, vector<double>& succProb, int start, int end) {
-        vector<double> V(n, 0.0);  
-        V[start] = 1.0; 
 
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < edges.size(); j++) {
+
+        vector<double> V(n, 0);  
+        V[start] = 1; 
+
+
+        for (int i = 0; i <= n - 2; i++ ){
+            int FactAct = 0; 
+            for (int j = 0; j < edges.size(); j++){
                 int u = edges[j][0];
                 int v = edges[j][1];
-                double prob = succProb[j];
-                //RELAJACION
-                if (V[u] * prob > V[v]) {
-                    V[v] = V[u] * prob;
+
+                double probabilidad = succProb[j];
+
+                //relax (parte de bellman ford)
+                if (V[u] * probabilidad > V[v]){
+                    FactAct=1;
+                    V[v] = V[u] * probabilidad;
                 }
-                if (V[v] * prob > V[u]) {
-                    V[u] = V[v] * prob;
+
+                if (V[v] * probabilidad > V[u]){
+                    FactAct=1;
+                    V[u] = V[v] * probabilidad;
                 }
+            }
+
+            if(FactAct==0){
+                break;
             }
 
         }
 
-        if (V[end] > 0.0) { 
+        if (V[end] > 0) { 
             return V[end];  
-        } else {
-            return 0.0;  
+        } 
+        else{
+            return 0;  
         }
 
     }
