@@ -81,8 +81,8 @@ public:
 class Solution {
 public:
     int countPaths(int n, vector<vector<int>>& roads) {
-        const int MOD = 1e9 + 7;
-        const long long INF = 1e15; // Valor alto para simular "infinito"
+        int MOD = 1e9 + 7;
+        long long INF = 1e15; // Valor alto para simular "infinito"
         
         // Construimos la lista de adyacencia
         vector<vector<pair<int, int>>> adj(n);
